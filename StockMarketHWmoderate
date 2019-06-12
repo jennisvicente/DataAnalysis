@@ -1,0 +1,88 @@
+Sub stockvolumeloop()
+
+For Each ws In Worksheets
+
+        Dim tickername As String
+        Dim tickervolume As Double
+        
+        tickervolume = 0
+        Dim summaryticker As Integer
+        summaryticker = 2
+'Moderate
+        Dim openprice As Double
+        openprice = ws.Cells(2, 3).Value
+        
+        Dim closeprice As Double
+        Dim yearlychange As Double
+        Dim percentchange As Double
+        
+        
+
+        ws.Cells(1, 9).Value = "Ticker"
+        ws.Cells(1, 10).Value = "Total Stock Volume"
+        ws.Cells(1, 11).Value = "Yearly Change"
+        ws.Cells(1, 12).Value = "Percent Change"
+
+       
+        lastrow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+
+
+        For i = 2 To lastrow
+
+            
+            If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
+        
+                tickername = ws.Cells(i, 1).Value
+
+                tickervolume = tickervolume + ws.Cells(i, 7).Value
+
+                ws.Range("I" & summaryticker).Value = tickername
+
+                ws.Range("J" & summaryticker).Value = tickervolume
+                
+                closeprice = ws.Cells(i, 6).Value
+                
+                yearlychange = (closeprice - openprice)
+                
+                ws.Range("K" & summaryticker).Value = yearlychange
+                If openprice = 0 Then
+                    percentchange = 0
+                
+                Else
+                    percentchange = (yearlychange / openprice)
+                
+                End If
+
+             
+              ws.Range("L" & summaryticker).Value = percentchange
+              ws.Range("L" & summaryticker).NumberFormat = "0.00%"
+
+                summaryticker = summaryticker + 1
+
+                tickervolume = 0
+
+            Else
+              
+                tickervolume = tickervolume + ws.Cells(i, 7).Value
+
+            End If
+        
+        Next i
+        lastrowsummarytable = ws.Cells(Rows.Count, 9).End(xlUp).Row
+    
+    'Formatting
+        For i = 2 To lastrowsummarytable
+            
+            If ws.Cells(i, 11).Value > 0 Then
+                ws.Cells(i, 11).Interior.ColorIndex = 10
+            
+            Else
+                ws.Cells(i, 11).Interior.ColorIndex = 3
+            
+            End If
+        
+        Next i
+
+    Next ws
+
+End Sub
